@@ -22,14 +22,25 @@ window.AseoTools["quitar-anuncios"] = async function (body, tool) {
           <p id="pageCount" class="file-pages">0 páginas</p>
         </div>
         <div class="control-block">
-          <h2>Modo</h2>
-          <div class="mode-toggle" role="group">
-            <button type="button" class="mode-btn active" data-mode="exclude" id="modeExclude">Excluir</button>
-            <button type="button" class="mode-btn" data-mode="crop" id="modeCrop">Recortar</button>
+          <h2>Qué quieres hacer</h2>
+          <div class="mode-toggle" role="group" aria-label="Modo">
+            <button type="button" class="mode-btn active" data-mode="exclude" id="modeExclude">Quitar páginas</button>
+            <button type="button" class="mode-btn" data-mode="crop" id="modeCrop">Recortar márgenes</button>
           </div>
           <p class="mode-help" id="modeHelp">Clic en una miniatura para excluirla del PDF final.</p>
         </div>
-        <div class="control-block">
+        <div id="excludePanel" class="control-block mode-panel">
+          <h2>Quitar páginas</h2>
+          <p class="help">Marca las que no quieres. Puedes no quitar ninguna.</p>
+          <div class="summary">
+            <div class="stat"><span id="keptCount">0</span><small>se mantienen</small></div>
+            <div class="stat"><span id="excludedCount">0</span><small>excluidas</small></div>
+          </div>
+          <div class="actions compact-actions">
+            <button type="button" class="btn btn-ghost" id="clearExcluded">Limpiar exclusiones</button>
+          </div>
+        </div>
+        <div id="cropPanel" class="control-block mode-panel hidden">
           <h2>Margen (mm)</h2>
           <p class="help">Solo en páginas marcadas para recorte.</p>
           <div class="margin-grid">
@@ -42,11 +53,10 @@ window.AseoTools["quitar-anuncios"] = async function (body, tool) {
             <button type="button" class="btn btn-ghost" data-preset="ads">Anuncios típicos</button>
             <button type="button" class="btn btn-ghost" data-preset="equal">Igual en todos</button>
           </div>
-        </div>
-        <div class="control-block summary">
-          <div class="stat"><span id="keptCount">0</span><small>se mantienen</small></div>
-          <div class="stat"><span id="excludedCount">0</span><small>excluidas</small></div>
-          <div class="stat"><span id="cropCount">0</span><small>con recorte</small></div>
+          <div class="summary">
+            <div class="stat"><span id="cropCount">0</span><small>con recorte</small></div>
+            <div class="stat"><span id="excludedHint">0</span><small>excluidas</small></div>
+          </div>
         </div>
         <div class="actions">
           <button type="button" class="btn btn-primary" id="exportBtn" disabled>Descargar PDF limpio</button>
@@ -56,10 +66,10 @@ window.AseoTools["quitar-anuncios"] = async function (body, tool) {
       </aside>
       <div class="pages-panel">
         <div class="pages-toolbar">
-          <h2>Páginas</h2>
+          <h2 id="pagesTitle">Páginas</h2>
           <div class="toolbar-actions">
             <button type="button" class="btn btn-ghost btn-sm" id="selectAllCrop">Marcar todas para recorte</button>
-            <button type="button" class="btn btn-ghost btn-sm" id="clearExcluded">Limpiar exclusiones</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="clearExcludedToolbar">Limpiar exclusiones</button>
           </div>
         </div>
         <div id="pagesGrid" class="pages-grid"></div>
@@ -75,21 +85,26 @@ window.AseoTools["quitar-anuncios"] = async function (body, tool) {
     fileName: body.querySelector("#fileName"),
     pageCount: body.querySelector("#pageCount"),
     pagesGrid: body.querySelector("#pagesGrid"),
+    pagesTitle: body.querySelector("#pagesTitle"),
     modeExclude: body.querySelector("#modeExclude"),
     modeCrop: body.querySelector("#modeCrop"),
     modeHelp: body.querySelector("#modeHelp"),
+    excludePanel: body.querySelector("#excludePanel"),
+    cropPanel: body.querySelector("#cropPanel"),
     marginTop: body.querySelector("#marginTop"),
     marginRight: body.querySelector("#marginRight"),
     marginBottom: body.querySelector("#marginBottom"),
     marginLeft: body.querySelector("#marginLeft"),
     keptCount: body.querySelector("#keptCount"),
     excludedCount: body.querySelector("#excludedCount"),
+    excludedHint: body.querySelector("#excludedHint"),
     cropCount: body.querySelector("#cropCount"),
     exportBtn: body.querySelector("#exportBtn"),
     resetBtn: body.querySelector("#resetBtn"),
     status: body.querySelector("#status"),
     selectAllCrop: body.querySelector("#selectAllCrop"),
     clearExcluded: body.querySelector("#clearExcluded"),
+    clearExcludedToolbar: body.querySelector("#clearExcludedToolbar"),
   };
 
   const state = {
@@ -116,16 +131,22 @@ window.AseoTools["quitar-anuncios"] = async function (body, tool) {
     };
   }
 
-  function allPagesCropMarked() {
-    if (state.pageCount === 0) return false;
+  function keptIndices() {
+    const indices = [];
     for (let i = 0; i < state.pageCount; i++) {
-      if (!state.cropPages.has(i)) return false;
+      if (!state.excluded.has(i)) indices.push(i);
     }
-    return true;
+    return indices;
+  }
+
+  function allKeptCropMarked() {
+    const kept = keptIndices();
+    if (kept.length === 0) return false;
+    return kept.every((i) => state.cropPages.has(i));
   }
 
   function updateCropToggleLabel() {
-    els.selectAllCrop.textContent = allPagesCropMarked()
+    els.selectAllCrop.textContent = allKeptCropMarked()
       ? "Quitar recorte de todas"
       : "Marcar todas para recorte";
   }
@@ -136,6 +157,7 @@ window.AseoTools["quitar-anuncios"] = async function (body, tool) {
     const crop = [...state.cropPages].filter((i) => !state.excluded.has(i)).length;
     els.keptCount.textContent = String(kept);
     els.excludedCount.textContent = String(excluded);
+    els.excludedHint.textContent = String(excluded);
     els.cropCount.textContent = String(crop);
     els.exportBtn.disabled = !state.pdfBytes || kept === 0;
     updateCropToggleLabel();
@@ -143,12 +165,18 @@ window.AseoTools["quitar-anuncios"] = async function (body, tool) {
 
   function setMode(mode) {
     state.mode = mode;
-    els.modeExclude.classList.toggle("active", mode === "exclude");
-    els.modeCrop.classList.toggle("active", mode === "crop");
-    els.modeHelp.textContent =
-      mode === "exclude"
-        ? "Clic en una miniatura para excluirla del PDF final."
-        : "Clic en una miniatura para aplicar (o quitar) el margen de recorte.";
+    const isExclude = mode === "exclude";
+    els.modeExclude.classList.toggle("active", isExclude);
+    els.modeCrop.classList.toggle("active", !isExclude);
+    els.excludePanel.classList.toggle("hidden", !isExclude);
+    els.cropPanel.classList.toggle("hidden", isExclude);
+    els.selectAllCrop.classList.toggle("hidden", isExclude);
+    els.clearExcludedToolbar.classList.toggle("hidden", !isExclude);
+    els.pagesTitle.textContent = isExclude ? "Quitar páginas" : "Recortar márgenes";
+    els.modeHelp.textContent = isExclude
+      ? "Clic en una miniatura para excluirla del PDF final."
+      : "Clic en una miniatura para aplicar (o quitar) el margen de recorte.";
+    refreshAllCards();
   }
 
   function refreshOverlays() {
@@ -157,7 +185,8 @@ window.AseoTools["quitar-anuncios"] = async function (body, tool) {
       const index = Number(card.dataset.index);
       const overlay = card.querySelector(".crop-overlay");
       const windowEl = card.querySelector(".crop-window");
-      const showCrop = state.cropPages.has(index) && !state.excluded.has(index);
+      const showCrop =
+        state.mode === "crop" && state.cropPages.has(index) && !state.excluded.has(index);
       overlay.hidden = !showCrop;
       if (!showCrop) return;
       const size = state.pageSizes[index];
@@ -174,11 +203,15 @@ window.AseoTools["quitar-anuncios"] = async function (body, tool) {
     const excluded = state.excluded.has(index);
     const crop = state.cropPages.has(index);
     card.classList.toggle("excluded", excluded);
-    card.classList.toggle("crop-marked", crop && !excluded);
+    card.classList.toggle("crop-marked", state.mode === "crop" && crop && !excluded);
     const badges = card.querySelector(".badges");
     badges.innerHTML = "";
-    if (excluded) badges.innerHTML = '<span class="badge badge-exclude">Fuera</span>';
-    else if (crop) badges.innerHTML = '<span class="badge badge-crop">Recorte</span>';
+    if (state.mode === "exclude") {
+      if (excluded) badges.innerHTML = '<span class="badge badge-exclude">Fuera</span>';
+    } else {
+      if (excluded) badges.innerHTML = '<span class="badge badge-exclude">Fuera</span>';
+      else if (crop) badges.innerHTML = '<span class="badge badge-crop">Recorte</span>';
+    }
   }
 
   function refreshAllCards() {
@@ -192,6 +225,7 @@ window.AseoTools["quitar-anuncios"] = async function (body, tool) {
       if (state.excluded.has(index)) state.excluded.delete(index);
       else state.excluded.add(index);
     } else {
+      if (state.excluded.has(index)) return;
       if (state.cropPages.has(index)) state.cropPages.delete(index);
       else state.cropPages.add(index);
     }
@@ -237,8 +271,8 @@ window.AseoTools["quitar-anuncios"] = async function (body, tool) {
       await renderPageThumb(page, i - 1);
       setStatus(`Renderizando… ${i}/${state.pageCount}`);
     }
-    refreshAllCards();
-    setStatus("Listo. Excluye anuncios y marca las páginas a recortar.");
+    setMode("exclude");
+    setStatus("Listo. Cambia de modo cuando quieras; no se pierde lo marcado.");
   }
 
   function resetApp() {
@@ -249,6 +283,7 @@ window.AseoTools["quitar-anuncios"] = async function (body, tool) {
     state.excluded.clear();
     state.cropPages.clear();
     state.pageSizes = [];
+    state.mode = "exclude";
     els.pagesGrid.innerHTML = "";
     els.workspace.classList.add("hidden");
     els.dropzone.classList.remove("hidden");
@@ -288,8 +323,7 @@ window.AseoTools["quitar-anuncios"] = async function (body, tool) {
       const src = await PDFDocument.load(state.pdfBytes.slice(), { ignoreEncryption: true });
       const out = await PDFDocument.create();
       const margins = getMarginsMm();
-      const indices = [];
-      for (let i = 0; i < state.pageCount; i++) if (!state.excluded.has(i)) indices.push(i);
+      const indices = keptIndices();
       const copied = await out.copyPages(src, indices);
       copied.forEach((page, idx) => {
         if (state.cropPages.has(indices[idx])) applyCropBox(page, margins);
@@ -304,6 +338,11 @@ window.AseoTools["quitar-anuncios"] = async function (body, tool) {
     } finally {
       updateStats();
     }
+  }
+
+  function clearExclusions() {
+    state.excluded.clear();
+    refreshAllCards();
   }
 
   Aseo.bindDropzone({
@@ -347,14 +386,16 @@ window.AseoTools["quitar-anuncios"] = async function (body, tool) {
     });
   });
   els.selectAllCrop.addEventListener("click", () => {
-    if (allPagesCropMarked()) state.cropPages.clear();
-    else for (let i = 0; i < state.pageCount; i++) state.cropPages.add(i);
+    const kept = keptIndices();
+    if (allKeptCropMarked()) {
+      kept.forEach((i) => state.cropPages.delete(i));
+    } else {
+      kept.forEach((i) => state.cropPages.add(i));
+    }
     refreshAllCards();
   });
-  els.clearExcluded.addEventListener("click", () => {
-    state.excluded.clear();
-    refreshAllCards();
-  });
+  els.clearExcluded.addEventListener("click", clearExclusions);
+  els.clearExcludedToolbar.addEventListener("click", clearExclusions);
   els.exportBtn.addEventListener("click", exportPdf);
   els.resetBtn.addEventListener("click", resetApp);
   setMode("exclude");

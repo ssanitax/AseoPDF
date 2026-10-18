@@ -123,7 +123,7 @@ window.Aseo = window.Aseo || {};
   Aseo.renderToolChrome = function (root, tool) {
     root.innerHTML = `
       <div class="tool-page">
-        <a class="back-link" href="#/">← Todas las herramientas</a>
+        <a class="btn btn-back" href="#/">← Todas las herramientas</a>
         <header class="tool-header">
           <p class="tool-kicker">${tool.category}</p>
           <h1>${tool.name}</h1>
@@ -182,14 +182,14 @@ window.Aseo = window.Aseo || {};
       id: "dividir-pdf",
       name: "Dividir PDF",
       category: "Organizar",
-      desc: "Separa páginas o rangos en archivos nuevos.",
+      desc: "Separa páginas en grupos y descarga un PDF por grupo.",
       icon: "⊟",
     },
     {
       id: "rotar-pdf",
       name: "Rotar PDF",
       category: "Organizar",
-      desc: "Gira páginas 90°, 180° o 270°.",
+      desc: "Rota el PDF entero o página a página, con vista previa.",
       icon: "↻",
     },
     {
