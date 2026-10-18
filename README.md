@@ -21,7 +21,7 @@ Suite estática para organizar y convertir PDFs (y formatos habituales) **en el 
 - PowerPoint (.pptx) → PDF *(imágenes embebidas)*
 - HTML → PDF
 
-Las conversiones Office son best-effort en cliente: no replican la fidelidad de un servidor (iLovePDF/Adobe).
+Las conversiones Office son best-effort en cliente: no replican la fidelidad de un convertidor en servidor.
 
 ## Uso local
 
