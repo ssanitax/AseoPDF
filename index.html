@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AseoPDF</title>
+  <meta name="description" content="Limpia, organiza y convierte PDFs en tu navegador. Sin subir archivos a ningún servidor." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand-name" href="#/">AseoPDF</a>
+      <p class="privacy">Todo se procesa en tu navegador</p>
+    </header>
+
+    <main>
+      <section id="hubView" class="hub-view">
+        <div class="hub-hero">
+          <h1>AseoPDF</h1>
+          <p class="lede">Organiza y convierte documentos como en iLovePDF, pero sin enviar nada a un servidor.</p>
+          <label class="search-wrap">
+            <span class="visually-hidden">Buscar herramienta</span>
+            <input type="search" id="searchInput" placeholder="Buscar herramienta…" autocomplete="off" />
+          </label>
+        </div>
+        <div id="toolsGrid" class="tools-grid"></div>
+      </section>
+
+      <section id="toolView" class="tool-view hidden">
+        <div id="toolRoot"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Compatible con GitHub Pages · sin Python ni backend</p>
+    </footer>
+  </div>
+
+  <!-- Core PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <!-- Zip / Office helpers -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script src="js/common.js"></script>
+  <script src="js/tools/quitar-anuncios.js"></script>
+  <script src="js/tools/convert.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
