@@ -49,10 +49,6 @@ window.AseoTools["quitar-anuncios"] = async function (body, tool) {
             <label class="margin-field"><span>Derecho</span><input type="number" id="marginRight" min="0" step="1" value="15" /></label>
             <label class="margin-field span-2"><span>Inferior</span><input type="number" id="marginBottom" min="0" step="1" value="25" /></label>
           </div>
-          <div class="preset-row">
-            <button type="button" class="btn btn-ghost" data-preset="ads">Anuncios típicos</button>
-            <button type="button" class="btn btn-ghost" data-preset="equal">Igual en todos</button>
-          </div>
           <div class="summary">
             <div class="stat"><span id="cropCount">0</span><small>con recorte</small></div>
             <div class="stat"><span id="excludedHint">0</span><small>excluidas</small></div>
@@ -366,23 +362,6 @@ window.AseoTools["quitar-anuncios"] = async function (body, tool) {
   ["input", "change"].forEach((ev) => {
     [els.marginTop, els.marginRight, els.marginBottom, els.marginLeft].forEach((input) => {
       input.addEventListener(ev, refreshOverlays);
-    });
-  });
-  body.querySelectorAll("[data-preset]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      if (btn.dataset.preset === "ads") {
-        els.marginTop.value = "18";
-        els.marginRight.value = "12";
-        els.marginBottom.value = "28";
-        els.marginLeft.value = "12";
-      } else {
-        const v = els.marginTop.value || "15";
-        els.marginTop.value = v;
-        els.marginRight.value = v;
-        els.marginBottom.value = v;
-        els.marginLeft.value = v;
-      }
-      refreshOverlays();
     });
   });
   els.selectAllCrop.addEventListener("click", () => {
