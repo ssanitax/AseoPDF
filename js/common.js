@@ -1,4 +1,4 @@
-/* global pdfjsLib, PDFLib, JSZip, mammoth, XLSX, docx, html2canvas, jspdf */
+/* global pdfjsLib, PDFLib, JSZip, XLSX, docx, html2canvas, jspdf */
 
 window.Aseo = window.Aseo || {};
 
@@ -200,10 +200,38 @@ window.Aseo = window.Aseo || {};
       icon: "▽",
     },
     {
+      id: "firmar-pdf",
+      name: "Firmar PDF",
+      category: "Editar",
+      desc: "Dibuja o sube tu firma y colócala en las páginas.",
+      icon: "✎",
+    },
+    {
+      id: "proteger-pdf",
+      name: "Proteger PDF",
+      category: "Editar",
+      desc: "Añade o quita contraseña de apertura (AES-256).",
+      icon: "⊛",
+    },
+    {
+      id: "marca-agua",
+      name: "Marca de agua",
+      category: "Editar",
+      desc: "Texto o imagen/logo, con color, vista previa y numeración.",
+      icon: "〰",
+    },
+    {
+      id: "redactar-pdf",
+      name: "Tachar datos",
+      category: "Editar",
+      desc: "Cubre información sensible con negro (irrecuperable).",
+      icon: "█",
+    },
+    {
       id: "jpg-a-pdf",
       name: "JPG a PDF",
       category: "Convertir",
-      desc: "Convierte imágenes JPG o PNG en un PDF.",
+      desc: "Junta JPG/PNG en un PDF, con vista previa de orientación.",
       icon: "▣",
     },
     {
@@ -224,42 +252,42 @@ window.Aseo = window.Aseo || {};
       id: "word-a-pdf",
       name: "Word a PDF",
       category: "Convertir",
-      desc: "Convierte documentos .docx a PDF (aproximado).",
+      desc: "Convierte .docx a PDF respetando páginas y márgenes.",
       icon: "W",
     },
     {
       id: "pdf-a-word",
       name: "PDF a Word",
       category: "Convertir",
-      desc: "Extrae el texto del PDF a un Word editable.",
+      desc: "PDF a Word con vista de página y texto con estilos.",
       icon: "¶",
     },
     {
       id: "excel-a-pdf",
       name: "Excel a PDF",
       category: "Convertir",
-      desc: "Convierte hojas .xlsx / .csv a PDF.",
+      desc: "Pasa una hoja de Excel/CSV a PDF paginado.",
       icon: "▦",
     },
     {
       id: "pdf-a-excel",
       name: "PDF a Excel",
       category: "Convertir",
-      desc: "Extrae texto del PDF a una hoja .xlsx.",
+      desc: "Extrae texto del PDF a Excel (con detección de columnas).",
       icon: "▤",
     },
     {
       id: "ppt-a-pdf",
       name: "PowerPoint a PDF",
       category: "Convertir",
-      desc: "Convierte .pptx a PDF usando las imágenes de las diapositivas.",
+      desc: "Convierte .pptx a PDF en el orden de las diapositivas.",
       icon: "▶",
     },
     {
       id: "html-a-pdf",
       name: "HTML a PDF",
       category: "Convertir",
-      desc: "Convierte un archivo HTML local a PDF.",
+      desc: "Convierte HTML local a PDF A4 paginado.",
       icon: "</>",
     },
   ];

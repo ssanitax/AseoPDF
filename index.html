@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AseoPDF</title>
-  <meta name="description" content="Limpia, organiza y convierte PDFs en tu navegador. Sin subir archivos a ningún servidor." />
+  <meta name="description" content="Organiza, edita y convierte PDFs en tu navegador. Firmar, proteger, tachar datos. Sin subir archivos a ningún servidor." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -21,7 +21,7 @@
       <section id="hubView" class="hub-view">
         <div class="hub-hero">
           <h1>AseoPDF</h1>
-          <p class="lede">Organiza y convierte documentos en tu navegador, sin enviar nada a un servidor.</p>
+          <p class="lede">Organiza, edita y convierte documentos en tu navegador, sin enviar nada a un servidor.</p>
           <label class="search-wrap">
             <span class="visually-hidden">Buscar herramienta</span>
             <input type="search" id="searchInput" placeholder="Buscar herramienta…" autocomplete="off" />
@@ -39,10 +39,10 @@
 
   <!-- Core PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@cantoo/pdf-lib@2.11.1/dist/pdf-lib.min.js"></script>
   <!-- Zip / Office helpers -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docx-preview@0.3.6/dist/docx-preview.js"></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -54,6 +54,7 @@
   <script src="js/tools/dividir-pdf.js"></script>
   <script src="js/tools/rotar-pdf.js"></script>
   <script src="js/tools/organizar.js"></script>
+  <script src="js/tools/editar.js"></script>
   <script src="js/tools/imagenes.js"></script>
   <script src="js/tools/office.js"></script>
   <script src="js/app.js"></script>

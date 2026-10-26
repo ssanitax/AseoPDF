@@ -44,6 +44,10 @@ window.Aseo = window.Aseo || {};
     const status = body.querySelector("#status");
     let files = [];
 
+    function notifyFilesChange() {
+      if (typeof opts.onFilesChange === "function") opts.onFilesChange(files.slice());
+    }
+
     function refresh() {
       fileArea.innerHTML = Aseo.fileListHtml(files);
       runBtn.disabled = files.length === 0;
@@ -55,6 +59,7 @@ window.Aseo = window.Aseo || {};
             dz.classList.remove("hidden");
           }
           refresh();
+          notifyFilesChange();
         });
       });
     }
@@ -70,6 +75,7 @@ window.Aseo = window.Aseo || {};
       dz.classList.add("hidden");
       panel.classList.remove("hidden");
       refresh();
+      notifyFilesChange();
       Aseo.setStatus(status, "");
     }
 
@@ -103,6 +109,7 @@ window.Aseo = window.Aseo || {};
       dz.classList.remove("hidden");
       Aseo.setStatus(status, "");
       refresh();
+      notifyFilesChange();
     });
 
     runBtn.addEventListener("click", async () => {
